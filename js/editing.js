@@ -1,12 +1,14 @@
 'use strict';
 
 (function () {
-  var POSITION_OF_TOGGLE = 20;
   var MAX_VALUE_CHROME = 1;
   var MAX_VALUE_SEPIA = 1;
   var MAX_VALUE_PHOBOS = 3;
   var MIN_VALUE_HEAT = 1;
   var MAX_VALUE_HEAT = 3;
+  var SCALE_STEP = 25;
+  var SCALE_VALUE_MIN = 25;
+  var SCALE_VALUE_MAX = 100;
 
   var editFormElement = document.querySelector('.img-upload__overlay');
   var editedPhotoElement = editFormElement.querySelector('.img-upload__preview img');
@@ -15,12 +17,14 @@
   var effectDepthElement = editFormElement.querySelector('.effect-level__depth');
   var effectLevelValue = editFormElement.querySelector('.effect-level__value');
   var scaleValueElement = editFormElement.querySelector('.scale__control--value');
+  var scaleSmallerElement = editFormElement.querySelector('.scale__control--smaller');
+  var scaleBiggerElement = editFormElement.querySelector('.scale__control--bigger');
 
   // Фильтры
 
   var currentFilter;
 
-  var editedPhotoElementChangeHandler = function (evt) {
+  var filterChangeHandler = function (evt) {
     if (evt.target.matches('input[type="radio"]')) {
       editedPhotoElement.style.filter = '';
       editedPhotoElement.classList.remove('effects__preview--' + currentFilter);
@@ -69,18 +73,7 @@
     'heat': getHeatFilter,
   };
 
-  var toggleMouseUpHandler = function () {
-    effectToggleElement.style.left = POSITION_OF_TOGGLE + '%';
-    effectDepthElement.style.width = POSITION_OF_TOGGLE + '%';
-    editedPhotoElement.style.filter = FILTERS_MAP[currentFilter(POSITION_OF_TOGGLE)];
-    effectLevelValue.value = POSITION_OF_TOGGLE;
-  };
-
   // Масштаб
-
-  var SCALE_STEP = 25;
-  var SCALE_VALUE_MIN = 25;
-  var SCALE_VALUE_MAX = 100;
 
   var getScaleValue = function () {
     return parseInt(scaleValueElement.value, 10);
@@ -104,15 +97,27 @@
     editedPhotoElement.style.transform = 'scale(' + (newScaleValue / 100) + ')';
   };
 
+  var addHandlers = function () {
+    editFormElement.addEventListener('change', filterChangeHandler);
+    scaleSmallerElement.addEventListener('click', scaleSmallerClickHandler);
+    scaleBiggerElement.addEventListener('click', scaleBiggerClickHandler);
+  };
+
+  var removeHandlers = function () {
+    editedPhotoElement.classList.remove('effects__preview--' + getCurrentFilter());
+    editFormElement.removeEventListener('change', filterChangeHandler);
+    scaleSmallerElement.removeEventListener('click', scaleSmallerClickHandler);
+    scaleBiggerElement.removeEventListener('click', scaleBiggerClickHandler);
+  };
+
   var getCurrentFilter = function () {
     return currentFilter;
   };
 
   window.editing = {
-    editedPhotoElementChangeHandler: editedPhotoElementChangeHandler,
-    toggleMouseUpHandler: toggleMouseUpHandler,
-    scaleSmallerClickHandler: scaleSmallerClickHandler,
-    scaleBiggerClickHandler: scaleBiggerClickHandler,
-    currentFilter: getCurrentFilter
+    getCurrentFilter: getCurrentFilter,
+    addHandlers: addHandlers,
+    removeHandlers: removeHandlers,
+    FILTERS_MAP: FILTERS_MAP
   };
 })();

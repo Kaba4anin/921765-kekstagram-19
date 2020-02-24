@@ -39,17 +39,7 @@
     return commentElement;
   };
 
-  var addCommentsElements = function (dataComments, element) {
-    element.innerHTML = '';
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < dataComments.length; i++) {
-      fragment.appendChild(createNewCommentElement(dataComments[i]));
-    }
-    element.appendChild(fragment);
-  };
-
   window.gallery = {
-    addCommentsElements: addCommentsElements
+    createNewCommentElement: createNewCommentElement
   };
 })();

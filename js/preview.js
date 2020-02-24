@@ -4,6 +4,16 @@
   var usersPictures = document.querySelectorAll('.picture');
   var bigPictureElement = document.querySelector('.big-picture');
 
+  var addCommentsElements = function (dataComments, element) {
+    element.innerHTML = '';
+    var fragment = document.createDocumentFragment();
+
+    for (var i = 0; i < dataComments.length; i++) {
+      fragment.appendChild(window.gallery.createNewCommentElement(dataComments[i]));
+    }
+    element.appendChild(fragment);
+  };
+
   var fillBigPictureWithData = function (data) {
     var newBigPictureElement = bigPictureElement.cloneNode(true);
 
@@ -13,7 +23,7 @@
     newBigPictureElement.querySelector('.social__caption').textContent = data.description;
 
     var commentsListElement = newBigPictureElement.querySelector('.social__comments');
-    window.gallery.addCommentsElements(data.comments, commentsListElement);
+    addCommentsElements(data.comments, commentsListElement);
 
     bigPictureElement.replaceWith(newBigPictureElement);
     newBigPictureElement.classList.remove('hidden');
